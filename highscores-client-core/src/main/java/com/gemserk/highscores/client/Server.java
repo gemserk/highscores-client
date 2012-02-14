@@ -32,6 +32,8 @@ public class Server {
 
 	private String apiKey;
 	private ExecutorService executorService;
+	
+	private User currentUser;
 
 	private URI baseUri;
 	private String createGuestUrl = "users/createGuest";
@@ -41,7 +43,7 @@ public class Server {
 	private Gson gson;
 
 	public void init(String apikey) {
-		init(apikey,"http://highscores.gemserk.com/");
+		init(apikey,"https://highscores.gemserk.com/");
 	}
 
 	public void init(String apiKey, String baseUri) {
@@ -84,11 +86,19 @@ public class Server {
 		});
 	}
 	
-	public Future<Void> submitScore(final User user, final String leaderboard, final long score ) {
+	public Future<Void> submitScore(final String leaderboard, final SubmittableScore score) {
+		return submitScore(currentUser,leaderboard, score);
+	}
+	
+	
+	public Future<Void> submitScore(final User user, final String leaderboard, final SubmittableScore score ) {
 		return executorService.submit(new Callable<Void>() {
 
 			@Override
 			public Void call() throws Exception {
+				if(user.privatekey==null){
+					throw new IllegalArgumentException("the privatekey must be not null");
+				}
 				
 				HttpClient httpClient = new DefaultHttpClient();
 				
@@ -98,7 +108,7 @@ public class Server {
 				params.add(new BasicNameValuePair("leaderboard", leaderboard));
 				params.add(new BasicNameValuePair("user", user.username));
 				params.add(new BasicNameValuePair("privatekey", user.privatekey));
-				params.add(new BasicNameValuePair("score", Long.toString(score)));
+				params.add(new BasicNameValuePair("score", Long.toString(score.score)));
 				
 				String encodedParams = URLEncodedUtils.format(params, "UTF-8");
 
@@ -167,6 +177,14 @@ public class Server {
 				return scores;
 			}
 		});
+	}
+	
+	public void setCurrentUser(User currentUser) {
+		this.currentUser = currentUser;
+	}
+	
+	public User getCurrentUser() {
+		return currentUser;
 	}
 
 	public void close() {
