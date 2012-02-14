@@ -136,7 +136,11 @@ public class Server {
 		});
 	}
 	
-	public Future<List<Score>> getScores(final String leaderboard, final Range range ) {
+	public Future<List<Score>> getScores(final String leaderboard, final Range range) {
+		return getScores(leaderboard, range,-1,-1);
+	}
+	
+	public Future<List<Score>> getScores(final String leaderboard, final Range range, final int page, final int pageSize) {
 		return executorService.submit(new Callable<List<Score>>() {
 
 			@Override
@@ -149,7 +153,10 @@ public class Server {
 				params.add(new BasicNameValuePair("apiKey", apiKey));
 				params.add(new BasicNameValuePair("leaderboard", leaderboard));
 				params.add(new BasicNameValuePair("range",range.key));
-				
+				if(page!=-1){
+					params.add(new BasicNameValuePair("page",Integer.toString(page)));
+					params.add(new BasicNameValuePair("pageSize",Integer.toString(pageSize)));
+				}
 				String encodedParams = URLEncodedUtils.format(params, "UTF-8");
 
 				URI uri = URIUtils.resolve(baseUri, viewScores + "?" + encodedParams);
