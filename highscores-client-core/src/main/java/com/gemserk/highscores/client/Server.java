@@ -43,7 +43,7 @@ public class Server {
 	private Gson gson;
 
 	public void init(String apikey) {
-		init(apikey,"https://highscores.gemserk.com/");
+		init(apikey,"http://highscores.gemserk.com/");
 	}
 
 	public void init(String apiKey, String baseUri) {
@@ -106,7 +106,7 @@ public class Server {
 
 				params.add(new BasicNameValuePair("apiKey", apiKey));
 				params.add(new BasicNameValuePair("leaderboard", leaderboard));
-				params.add(new BasicNameValuePair("user", user.username));
+				params.add(new BasicNameValuePair("userId", Long.toString(user.userId)));
 				params.add(new BasicNameValuePair("privatekey", user.privatekey));
 				params.add(new BasicNameValuePair("score", Long.toString(score.score)));
 				

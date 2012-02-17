@@ -2,20 +2,18 @@ package com.gemserk.highscores.client;
 
 public class User {
 
-	String username;
+	long userId;
 	String name;
 	String privatekey;
-	boolean guest;
 
-	public User(String username, String name, String privatekey, boolean guest) {
-		this.username = username;
+	public User(long userId, String name, String privatekey) {
+		this.userId = userId;
 		this.name = name;
 		this.privatekey = privatekey;
-		this.guest = guest;
 	}
 
-	public String getUsername() {
-		return username;
+	public long getUserId() {
+		return userId;
 	}
 
 	public String getName() {
@@ -24,9 +22,5 @@ public class User {
 
 	public String getPrivatekey() {
 		return privatekey;
-	}
-
-	public boolean isGuest() {
-		return guest;
 	}
 }

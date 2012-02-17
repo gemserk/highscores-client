@@ -1,24 +1,24 @@
 package com.gemserk.highscores.client;
 
 public class Score {
-	String username;
+	long userId;
 	String name;
 	long score;
 
-	public Score(String username, String name, long score) {
-		this.username = username;
+	public Score(long userId, String name, long score) {
+		this.userId = userId;
 		this.name = name;
 		this.score = score;
 	}
 
-	public String getUsername() {
-		return username;
+	public long getUserId() {
+		return userId;
 	}
-
-	public void setUsername(String username) {
-		this.username = username;
+	
+	public void setUserId(long userId) {
+		this.userId = userId;
 	}
-
+	
 	public String getName() {
 		return name;
 	}
@@ -37,7 +37,7 @@ public class Score {
 
 	@Override
 	public String toString() {
-		return "Score[" + name + " - " + score + "]";
+		return "Score[(" + userId + ") " + name + " - " + score + "]";
 	}
 
 }
