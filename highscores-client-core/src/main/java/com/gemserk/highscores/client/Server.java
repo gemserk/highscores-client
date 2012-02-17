@@ -28,6 +28,8 @@ import com.google.gson.reflect.TypeToken;
 
 public class Server {
 
+	
+
 	Logger logger = LoggerFactory.getLogger(Server.class);
 
 	private String apiKey;
@@ -36,9 +38,11 @@ public class Server {
 	private User currentUser;
 
 	private URI baseUri;
-	private String createGuestUrl = "users/createGuest";
-	private String submitScoreUrl = "/leaderboards/score";
-	private String viewScores = "/leaderboards/scores";
+	private static final String createGuestUrl = "/users/createGuest";
+	private static final String updateUserUrl = "/users/updateUser";
+	private static final String submitScoreUrl = "/leaderboards/score";
+	private static final String viewScores = "/leaderboards/scores";
+	
 	
 	private Gson gson;
 
@@ -78,6 +82,51 @@ public class Server {
 
 				if (logger.isDebugEnabled())
 					logger.debug("createGuest json retrieved from server: " + guestUserJson);
+
+				User user = gson.fromJson(guestUserJson, User.class);
+
+				return user;
+			}
+		});
+	}
+	
+	public Future<User> updateUser(final User user, final String newName ) {
+		return executorService.submit(new Callable<User>() {
+
+			@Override
+			public User call() throws Exception {
+				if(user.privatekey==null){
+					throw new IllegalArgumentException("the privatekey must be not null");
+				}
+				
+				HttpClient httpClient = new DefaultHttpClient();
+				
+				List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+				params.add(new BasicNameValuePair("userId", Long.toString(user.userId)));
+				params.add(new BasicNameValuePair("privatekey", user.privatekey));
+				params.add(new BasicNameValuePair("newName", newName));
+				
+				String encodedParams = URLEncodedUtils.format(params, "UTF-8");
+
+				URI uri = URIUtils.resolve(baseUri, updateUserUrl + "?" + encodedParams);
+
+				HttpGet httpget = new HttpGet(uri);
+
+				if (logger.isDebugEnabled())
+					logger.debug("Submiting score query uri: " + httpget.getURI());
+
+				HttpResponse response = httpClient.execute(httpget);
+
+				StatusLine statusLine = response.getStatusLine();
+
+				if (statusLine.getStatusCode() != HttpStatus.SC_OK)
+					throw new HighscoresComunicationException("failed to updateUser",statusLine.getStatusCode(), statusLine.getReasonPhrase());
+
+				String guestUserJson = EntityUtils.toString(response.getEntity());
+
+				if (logger.isDebugEnabled())
+					logger.debug("updateUser json retrieved from server: " + guestUserJson);
 
 				User user = gson.fromJson(guestUserJson, User.class);
 
@@ -135,6 +184,8 @@ public class Server {
 			}
 		});
 	}
+	
+	
 	
 	public Future<List<Score>> getScores(final String leaderboard, final Range range) {
 		return getScores(leaderboard, range,-1,-1);
