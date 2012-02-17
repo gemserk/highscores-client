@@ -5,11 +5,13 @@ public class User {
 	long userId;
 	String name;
 	String privatekey;
+	boolean guest;
 
-	public User(long userId, String name, String privatekey) {
+	public User(long userId, String name, String privatekey, boolean guest) {
 		this.userId = userId;
 		this.name = name;
 		this.privatekey = privatekey;
+		this.guest = guest;
 	}
 
 	public long getUserId() {
@@ -22,5 +24,9 @@ public class User {
 
 	public String getPrivatekey() {
 		return privatekey;
+	}
+	
+	public boolean isGuest() {
+		return guest;
 	}
 }
