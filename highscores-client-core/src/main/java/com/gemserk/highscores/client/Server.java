@@ -9,6 +9,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -42,7 +43,7 @@ public class Server {
 	private static final String updateUserUrl = "/users/updateUser";
 	private static final String submitScoreUrl = "/leaderboards/score";
 	private static final String viewScores = "/leaderboards/scores";
-	
+	private HttpClient httpClient;
 	
 	private Gson gson;
 
@@ -55,18 +56,22 @@ public class Server {
 		this.baseUri = URI.create(baseUri);
 		executorService = Executors.newSingleThreadExecutor();
 		gson = new Gson();
+		httpClient = new DefaultHttpClient();
 	}
 
 	public Future<User> getNewGuestUser() {
 		return executorService.submit(new Callable<User>() {
 
+			
+
 			@Override
 			public User call() throws Exception {
-				HttpClient httpClient = new DefaultHttpClient();
+			
 
 				URI uri = URIUtils.resolve(baseUri, createGuestUrl);
 
 				HttpGet httpget = new HttpGet(uri);
+				httpget.setHeader("accept","application/json");
 
 				if (logger.isDebugEnabled())
 					logger.debug("CreateGuest query uri: " + httpget.getURI());
@@ -98,8 +103,6 @@ public class Server {
 				if(user.privatekey==null){
 					throw new IllegalArgumentException("the privatekey must be not null");
 				}
-				
-				HttpClient httpClient = new DefaultHttpClient();
 				
 				List<NameValuePair> params = new ArrayList<NameValuePair>();
 
@@ -149,8 +152,6 @@ public class Server {
 					throw new IllegalArgumentException("the privatekey must be not null");
 				}
 				
-				HttpClient httpClient = new DefaultHttpClient();
-				
 				List<NameValuePair> params = new ArrayList<NameValuePair>();
 
 				params.add(new BasicNameValuePair("apiKey", apiKey));
@@ -164,7 +165,8 @@ public class Server {
 				URI uri = URIUtils.resolve(baseUri, submitScoreUrl + "?" + encodedParams);
 
 				HttpGet httpget = new HttpGet(uri);
-
+				httpget.setHeader("accept","application/json");
+				
 				if (logger.isDebugEnabled())
 					logger.debug("Submiting score query uri: " + httpget.getURI());
 
@@ -196,9 +198,7 @@ public class Server {
 
 			@Override
 			public List<Score> call() throws Exception {
-				
-				HttpClient httpClient = new DefaultHttpClient();
-				
+
 				List<NameValuePair> params = new ArrayList<NameValuePair>();
 
 				params.add(new BasicNameValuePair("apiKey", apiKey));
@@ -222,7 +222,7 @@ public class Server {
 				StatusLine statusLine = response.getStatusLine();
 
 				if (statusLine.getStatusCode() != HttpStatus.SC_OK)
-					throw new HighscoresComunicationException("failed to submit score",statusLine.getStatusCode(), statusLine.getReasonPhrase());
+					throw new HighscoresComunicationException("failed to get scores",statusLine.getStatusCode(), statusLine.getReasonPhrase());
 
 				String scoresJson = EntityUtils.toString(response.getEntity());
 
