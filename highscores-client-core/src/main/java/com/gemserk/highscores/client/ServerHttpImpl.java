@@ -53,8 +53,8 @@ public class ServerHttpImpl implements Server {
 	public ServerHttpImpl(String apiKey, String baseUri, ExecutorService executorService) {
 		this.apiKey = apiKey;
 		this.baseUri = URI.create(baseUri);
-		gson = new Gson();
-		httpClient = new DefaultHttpClient();
+		this.gson = new Gson();
+		this.httpClient = new DefaultHttpClient();
 		this.executorService = executorService;
 	}
 
