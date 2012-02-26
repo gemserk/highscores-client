@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.gemserk.highscores.client</groupId>
 	<artifactId>highscores-client</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>highscores-client</name>
 	<description>java client for Gemserk's highscores server</description>

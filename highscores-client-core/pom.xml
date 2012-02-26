@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.gemserk.highscores.client</groupId>
 		<artifactId>highscores-client</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.0.2-SNAPSHOT</version>
 	</parent>
 	<artifactId>highscores-client-core</artifactId>
 	<packaging>jar</packaging>
