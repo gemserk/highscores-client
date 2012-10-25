@@ -6,6 +6,10 @@ public class User {
 	String name;
 	String privatekey;
 	boolean guest;
+	
+	public User() {
+		
+	}
 
 	public User(long userId, String name, String privatekey, boolean guest) {
 		this.userId = userId;

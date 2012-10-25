@@ -66,7 +66,6 @@ public class ServerHttpImpl implements Server {
 			public User call() throws Exception {
 
 				try {
-
 					URI uri = URIUtils.resolve(baseUri, createGuestUrl);
 
 					HttpGet httpget = new HttpGet(uri);
